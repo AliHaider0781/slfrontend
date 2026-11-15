@@ -2,4 +2,13 @@
 
 :root {
   --font-sans: "Inter Variable", sans-serif;
+  --teal: #4ca5a5;
+  --white: #ffffff;
+  --gray: #f8fafc;
+  --slate: #1e293b;
+  --slate-gray: #64748b;
+  --border-gray: #e2e8f0;
+  --link-blue: #2563eb;
+  --bg-nav: #e2e8eb;
+  --text-black: #000;
 }
