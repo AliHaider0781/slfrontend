@@ -1,3 +1,5 @@
+import { Globe, Link2, TrendingUp, Calendar } from "lucide-react";
+
 function DashboardPage() {
   return (
     <div className="w-full flex flex-col items-center gap-8">
@@ -24,17 +26,17 @@ function DashboardPage() {
           </div>
         </div>
         <div className="flex gap-4 w-full">
-          <div className="flex flex-col justify-center items-start gap-2 w-80 border-2 border-(--border-gray) rounded-md p-6 shadow-lg">
-            <h1>Total Clicks</h1>
-            <p>1,524</p>
+          <div className="flex flex-col justify-center items-start gap-2 w-80 border-2 border-(--border-gray) rounded-md px-4 py-6 shadow-lg">
+            <h1 className="text-lg font-medium">Total Clicks</h1>
+            <p className="text-2xl font-semibold">1,524</p>
           </div>
-          <div className="flex flex-col justify-center items-start gap-2 w-80 border-2 border-(--border-gray) rounded-md p-6 shadow-lg">
-            <h1>Active Links</h1>
-            <p>45</p>
+          <div className="flex flex-col justify-center items-start gap-2 w-80 border-2 border-(--border-gray) rounded-md px-4 py-6 shadow-lg">
+            <h1 className="text-lg font-medium">Active Links</h1>
+            <p className="text-2xl font-semibold">45</p>
           </div>
-          <div className="flex flex-col justify-center items-start gap-2 w-80 border-2 border-(--border-gray) rounded-md p-6 shadow-lg">
-            <h1>Top Performing Link</h1>
-            <p>/promo-sale</p>
+          <div className="flex flex-col justify-center items-start gap-2 w-80 border-2 border-(--border-gray) rounded-md px-4 py-6 shadow-lg">
+            <h1 className="text-lg font-medium">Top Performing Link</h1>
+            <p className="text-2xl font-semibold">/promo-sale</p>
           </div>
         </div>
         <div className="flex flex-col justify-center items-center gap-6">
@@ -50,26 +52,38 @@ function DashboardPage() {
               </tr>
               <tr className="bg-(--bg-nav)">
                 <th className="p-3 text-left border-b-2 border-(--border-gray)">
-                  Original Link
+                  <div className="flex items-center gap-2 ">
+                    <Globe />
+                    Original Link
+                  </div>
                 </th>
                 <th className="p-3 text-left border-b-2 border-(--border-gray)">
-                  Short Link
+                  <div className="flex items-center gap-2 ">
+                    <Link2 />
+                    Short Link
+                  </div>
                 </th>
                 <th className="p-3 text-left border-b-2 border-(--border-gray)">
-                  Clicks
+                  <div className="flex items-center gap-2 ">
+                    <TrendingUp />
+                    Clicks
+                  </div>
                 </th>
                 <th className="p-3 text-left border-b-2 border-(--border-gray)">
-                  Created Date
+                  <div className="flex items-center gap-2 ">
+                    <Calendar />
+                    Created Date
+                  </div>
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="font-medium">
               <tr>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  https://google.com
+                <td className="p-3 text-left border-b-2 border-(--border-gray) underline">
+                  <a href="https://google.com">https://google.com</a>
                 </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  shortly.com/2gU4h6
+                <td className="p-3 text-left border-b-2 border-(--border-gray) text-(--teal) underline">
+                  <a href="shortly.com/2gU4h6">shortly.com/2gU4h6</a>
                 </td>
                 <td className="p-3 text-left border-b-2 border-(--border-gray)">
                   300
@@ -79,25 +93,11 @@ function DashboardPage() {
                 </td>
               </tr>
               <tr>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  https://google.com
+                <td className="p-3 text-left border-b-2 border-(--border-gray) underline">
+                  <a href="https://google.com">https://google.com</a>
                 </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  shortly.com/2gU4h6
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  300
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  Jan 21, 2021, 4:08 AM
-                </td>
-              </tr>
-              <tr>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  https://google.com
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  shortly.com/2gU4h6
+                <td className="p-3 text-left border-b-2 border-(--border-gray) text-(--teal) underline">
+                  <a href="shortly.com/2gU4h6">shortly.com/2gU4h6</a>
                 </td>
                 <td className="p-3 text-left border-b-2 border-(--border-gray)">
                   300
@@ -107,14 +107,32 @@ function DashboardPage() {
                 </td>
               </tr>
               <tr>
-                <td className="p-3 text-left">https://google.com</td>
-                <td className="p-3 text-left">shortly.com/2gU4h6</td>
+                <td className="p-3 text-left border-b-2 border-(--border-gray) underline">
+                  <a href="https://google.com">https://google.com</a>
+                </td>
+                <td className="p-3 text-left border-b-2 border-(--border-gray) text-(--teal) underline">
+                  <a href="shortly.com/2gU4h6">shortly.com/2gU4h6</a>
+                </td>
+                <td className="p-3 text-left border-b-2 border-(--border-gray)">
+                  300
+                </td>
+                <td className="p-3 text-left border-b-2 border-(--border-gray)">
+                  Jan 21, 2021, 4:08 AM
+                </td>
+              </tr>
+              <tr>
+                <td className="p-3 text-left underline">
+                  <a href="https://google.com">https://google.com</a>
+                </td>
+                <td className="p-3 text-left text-(--teal) underline">
+                  <a href="shortly.com/2gU4h6">shortly.com/2gU4h6</a>
+                </td>
                 <td className="p-3 text-left">300</td>
                 <td className="p-3 text-left">Jan 21, 2021, 4:08 AM</td>
               </tr>
             </tbody>
           </table>
-          <p className="font-semibold text-sm text-center">
+          <p className="font-semibold text-sm text-center underline">
             <a href="/links">View more links...</a>
           </p>
         </div>

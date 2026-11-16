@@ -1,14 +1,19 @@
 import { Outlet, NavLink } from "react-router-dom";
-import { UserButton, Show } from "@clerk/react";
+import { UserButton, Show, useUser } from "@clerk/react";
 import { LayoutDashboard, Link, BarChart3 } from "lucide-react";
 import OnboardingPage from "./OnboardingPage";
 
-function DashboardLayout() {
+function NavBarLayout() {
   const linkStyles = `
   flex justify-start items-center gap-2 w-full rounded-lg text-lg font-medium text-(--text-black) transition duration-300 py-3 px-6
   hover:text-(--teal) 
   aria-[current=page]:bg-(--teal) aria-[current=page]:text-(--white) aria-[current=page]:hover:text-(--white) aria-[current=page]:py-3 aria-[current=page]:px-6
 `;
+  const { user, isLoaded } = useUser();
+
+  if (!isLoaded) {
+    return;
+  }
 
   return (
     <>
@@ -47,11 +52,13 @@ function DashboardLayout() {
             </div>
           </aside>
           <main className="w-full flex flex-col items-center gap-8 border-l border-(--border-gray) shadow-xl overflow-y-auto overflow-x-hidden">
-            <header className="sticky top-0 bg-(--white) z-50 w-full flex justify-between items-center px-8 py-2.5 text-(--slate) border-b border-(--border-gray) shadow-xs">
-              <h1>Welcome back, Username!</h1>
+            <header className="sticky top-0 bg-(--teal) text-(--white) z-50 w-full flex justify-between items-center px-8 py-2.5 border-b border-(--border-gray) shadow-xs">
+              <h1 className="text-xl font-semibold">
+                Welcome back, {user.fullName}!
+              </h1>
               <UserButton />
             </header>
-            <div className="w-full p-6">
+            <div className="w-full">
               <Outlet />
             </div>
           </main>
@@ -61,4 +68,4 @@ function DashboardLayout() {
   );
 }
 
-export default DashboardLayout;
+export default NavBarLayout;

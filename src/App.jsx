@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ClerkProvider } from "@clerk/react";
-import DashboardLayout from "./pages/DashboardLayout";
+import NavBarLayout from "./pages/NavBarLayout";
 import DashboardPage from "./pages/DashboardPage";
 import LinksPage from "./pages/LinksPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
@@ -17,7 +17,7 @@ function App() {
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <BrowserRouter>
         <Routes>
-          <Route element={<DashboardLayout />}>
+          <Route element={<NavBarLayout />}>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/links" element={<LinksPage />} />
