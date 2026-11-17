@@ -1,6 +1,16 @@
 import { Globe, Link2, TrendingUp, Calendar } from "lucide-react";
+import { useLink } from "../hooks/useLink";
 
 function DashboardPage() {
+  const { links } = useLink();
+
+  const formattedLinks = links.map(({ id, url, code, created_at }) => ({
+    id,
+    url,
+    code,
+    createdAt: created_at,
+  }));
+
   return (
     <div className="w-full flex flex-col items-center gap-8">
       <div className="w-full px-6 py-2 flex flex-col justify-center gap-6">
@@ -26,15 +36,15 @@ function DashboardPage() {
           </div>
         </div>
         <div className="flex gap-4 w-full">
-          <div className="flex flex-col justify-center items-start gap-2 w-80 border-2 border-(--border-gray) rounded-md px-4 py-6 shadow-lg">
+          <div className="flex flex-col justify-center items-start gap-2 w-full border-2 border-(--border-gray) rounded-md px-4 py-6 shadow-lg">
             <h1 className="text-lg font-medium">Total Clicks</h1>
             <p className="text-2xl font-semibold">1,524</p>
           </div>
-          <div className="flex flex-col justify-center items-start gap-2 w-80 border-2 border-(--border-gray) rounded-md px-4 py-6 shadow-lg">
+          <div className="flex flex-col justify-center items-start gap-2 w-full border-2 border-(--border-gray) rounded-md px-4 py-6 shadow-lg">
             <h1 className="text-lg font-medium">Active Links</h1>
             <p className="text-2xl font-semibold">45</p>
           </div>
-          <div className="flex flex-col justify-center items-start gap-2 w-80 border-2 border-(--border-gray) rounded-md px-4 py-6 shadow-lg">
+          <div className="flex flex-col justify-center items-start gap-2 w-full border-2 border-(--border-gray) rounded-md px-4 py-6 shadow-lg">
             <h1 className="text-lg font-medium">Top Performing Link</h1>
             <p className="text-2xl font-semibold">/promo-sale</p>
           </div>
@@ -78,62 +88,48 @@ function DashboardPage() {
               </tr>
             </thead>
             <tbody className="font-medium">
-              <tr>
-                <td className="p-3 text-left border-b-2 border-(--border-gray) underline">
-                  <a href="https://google.com">https://google.com</a>
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray) text-(--teal) underline">
-                  <a href="shortly.com/2gU4h6">shortly.com/2gU4h6</a>
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  300
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  Jan 21, 2021, 4:08 AM
-                </td>
-              </tr>
-              <tr>
-                <td className="p-3 text-left border-b-2 border-(--border-gray) underline">
-                  <a href="https://google.com">https://google.com</a>
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray) text-(--teal) underline">
-                  <a href="shortly.com/2gU4h6">shortly.com/2gU4h6</a>
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  300
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  Jan 21, 2021, 4:08 AM
-                </td>
-              </tr>
-              <tr>
-                <td className="p-3 text-left border-b-2 border-(--border-gray) underline">
-                  <a href="https://google.com">https://google.com</a>
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray) text-(--teal) underline">
-                  <a href="shortly.com/2gU4h6">shortly.com/2gU4h6</a>
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  300
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray)">
-                  Jan 21, 2021, 4:08 AM
-                </td>
-              </tr>
-              <tr>
-                <td className="p-3 text-left underline">
-                  <a href="https://google.com">https://google.com</a>
-                </td>
-                <td className="p-3 text-left text-(--teal) underline">
-                  <a href="shortly.com/2gU4h6">shortly.com/2gU4h6</a>
-                </td>
-                <td className="p-3 text-left">300</td>
-                <td className="p-3 text-left">Jan 21, 2021, 4:08 AM</td>
-              </tr>
+              {formattedLinks.length > 0 ? (
+                formattedLinks
+                  .slice(-5)
+                  .reverse()
+                  .map(({ id, url, code, createdAt }) => (
+                    <tr key={id} className="group">
+                      <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0 underline">
+                        <a href={url} target="_blank" rel="noopener noreferrer">
+                          {url}
+                        </a>
+                      </td>
+                      <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0 text-(--teal) underline">
+                        <a
+                          href={`https://shortly.com/${code}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          https://shortly.com/{code}
+                        </a>
+                      </td>
+                      <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0">
+                        {code}
+                      </td>
+                      <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0">
+                        {createdAt}
+                      </td>
+                    </tr>
+                  ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="p-6 text-center text-(--slate-gray)"
+                  >
+                    No links yet.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
           <p className="font-semibold text-sm text-center underline">
-            <a href="/links">View more links...</a>
+            <a href="/links">View more links {">"}</a>
           </p>
         </div>
       </div>

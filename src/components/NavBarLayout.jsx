@@ -1,7 +1,7 @@
 import { Outlet, NavLink } from "react-router-dom";
 import { UserButton, Show, useUser } from "@clerk/react";
 import { LayoutDashboard, Link, BarChart3 } from "lucide-react";
-import OnboardingPage from "./OnboardingPage";
+import OnboardingPage from "../pages/OnboardingPage";
 
 function NavBarLayout() {
   const linkStyles = `
