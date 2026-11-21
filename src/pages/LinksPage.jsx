@@ -52,7 +52,7 @@ function LinksPage() {
         </thead>
         <tbody className="font-medium">
           {formattedLinks.length > 0 ? (
-            formattedLinks.map(({ id, url, code, createdAt }) => (
+            formattedLinks.reverse().map(({ id, url, code, createdAt }) => (
               <tr key={id} className="group">
                 <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0 underline">
                   <a href={url} target="_blank" rel="noopener noreferrer">

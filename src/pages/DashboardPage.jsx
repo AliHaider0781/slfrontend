@@ -1,8 +1,15 @@
 import { Globe, Link2, TrendingUp, Calendar } from "lucide-react";
 import { useLink } from "../hooks/useLink";
+import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/react";
 
 function DashboardPage() {
+  const [newLink, setNewLink] = useState("");
+  const [inputLink, setInputLink] = useState("");
+
   const { links } = useLink();
+
+  const { getToken } = useAuth();
 
   const formattedLinks = links.map(({ id, url, code, created_at }) => ({
     id,
@@ -10,6 +17,37 @@ function DashboardPage() {
     code,
     createdAt: created_at,
   }));
+
+  const setInput = () => {
+    setInputLink(newLink);
+  };
+
+  const postEndpoint = "http://127.0.0.1:8001/links";
+
+  useEffect(() => {
+    const createNewLink = async (url) => {
+      try {
+        const token = await getToken();
+        const response = await fetch(postEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ url: url }),
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Sucess:", data);
+        setNewLink("");
+      } catch (e) {
+        console.error("Error:", e);
+      }
+    };
+    createNewLink(inputLink);
+  }, [inputLink, getToken]);
 
   return (
     <div className="w-full flex flex-col items-center gap-8">
@@ -21,14 +59,14 @@ function DashboardPage() {
           <div className="flex gap-5 justify-start items-center">
             <input
               type="text"
-              value=""
-              onChange=""
+              value={newLink}
+              onChange={(e) => setNewLink(e.target.value)}
               placeholder="Enter your long URl here..."
               className="text-(--text-black) border-2 border-(--border-gray) bg-(--white) w-175 px-5 py-2 text-lg rounded-lg placeholder:text-(--text-black)/70 focus:outline-none"
             />
 
             <button
-              onClick=""
+              onClick={setInput}
               className="bg-(--teal) text-(--white) px-5 py-3 rounded-lg font-semibold transition duration-300 hover:bg-(--teal)/60"
             >
               Shorten Link
