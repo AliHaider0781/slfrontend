@@ -5,12 +5,34 @@ export const LinkContext = createContext();
 
 export function LinkProvider({ children }) {
   const [links, setLinks] = useState([]);
-  const { getToken } = useAuth();
+  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const refresh = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
 
   useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
     const getLinks = async () => {
+      if (!isSignedIn) {
+        setLinks([]);
+        setIsLoading(false);
+        return;
+      }
       try {
+        setError(null);
+        setIsLoading(true);
+
         const token = await getToken();
+        if (!token) {
+          throw new Error("Token does not exist!");
+        }
         const response = await fetch("http://127.0.0.1:8001/links", {
           method: "GET",
           headers: {
@@ -18,19 +40,24 @@ export function LinkProvider({ children }) {
             Authorization: `Bearer ${token}`,
           },
         });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         const linkData = await response.json();
         return setLinks(linkData);
       } catch (error) {
+        setError(error);
         console.error(`Error: Unable to fetch link data!, ${error}`);
+      } finally {
+        setIsLoading(false);
       }
     };
     getLinks();
-    const interval = setInterval(getLinks, 2000);
-
-    return () => clearInterval(interval);
-  }, [getToken]);
+  }, [getToken, isLoaded, isSignedIn, refreshKey]);
 
   return (
-    <LinkContext.Provider value={{ links }}>{children}</LinkContext.Provider>
+    <LinkContext.Provider value={{ links, isLoading, error, refresh }}>
+      {children}
+    </LinkContext.Provider>
   );
 }

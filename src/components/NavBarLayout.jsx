@@ -9,7 +9,7 @@ function NavBarLayout() {
   hover:text-(--teal) 
   aria-[current=page]:bg-(--teal) aria-[current=page]:text-(--white) aria-[current=page]:hover:text-(--white) aria-[current=page]:py-3 aria-[current=page]:px-6
 `;
-  const { user, isLoaded } = useUser();
+  const { user, isLoaded, isSignedIn } = useUser();
 
   if (!isLoaded) {
     return;
@@ -54,7 +54,7 @@ function NavBarLayout() {
           <main className="w-full flex flex-col items-center gap-8 border-l border-(--border-gray) shadow-xl overflow-y-auto overflow-x-hidden">
             <header className="sticky top-0 bg-(--teal) text-(--white) z-50 w-full flex justify-between items-center px-8 py-2.5 border-b border-(--border-gray) shadow-xs">
               <h1 className="text-xl font-semibold">
-                Welcome back, {user.fullName}!
+                Welcome back, {isSignedIn ? user.fullName : null}
               </h1>
               <UserButton />
             </header>
