@@ -1,54 +1,51 @@
 import { Globe, Link2, TrendingUp, Calendar } from "lucide-react";
 import { useLink } from "../hooks/useLink";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "@clerk/react";
 
 function DashboardPage() {
   const [newLink, setNewLink] = useState("");
-  const [inputLink, setInputLink] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
 
-  const { links } = useLink();
+  const { links, refresh, isLoading } = useLink();
 
   const { getToken } = useAuth();
 
-  const formattedLinks = links.map(({ id, url, code, created_at }) => ({
+  const formattedLinks = links.map(({ id, url, code, created_at, clicks }) => ({
     id,
     url,
     code,
     createdAt: created_at,
+    clicks: clicks,
   }));
-
-  const setInput = () => {
-    setInputLink(newLink);
-  };
 
   const postEndpoint = "http://127.0.0.1:8001/links";
 
-  useEffect(() => {
-    const createNewLink = async (url) => {
-      try {
-        const token = await getToken();
-        const response = await fetch(postEndpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ url: url }),
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log("Sucess:", data);
-        setNewLink("");
-      } catch (e) {
-        console.error("Error:", e);
+  const createNewLink = async (url) => {
+    try {
+      setIsCreating(true);
+      const token = await getToken();
+      const response = await fetch(postEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ url: url }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
-    createNewLink(inputLink);
-  }, [inputLink, getToken]);
-
+      const data = await response.json();
+      refresh();
+      console.log("Sucess:", data);
+      setNewLink("");
+    } catch (e) {
+      console.error("Error:", e);
+    } finally {
+      setIsCreating(false);
+    }
+  };
   return (
     <div className="w-full flex flex-col items-center gap-8">
       <div className="w-full px-6 py-2 flex flex-col justify-center gap-6">
@@ -66,10 +63,11 @@ function DashboardPage() {
             />
 
             <button
-              onClick={setInput}
+              onClick={() => createNewLink(newLink)}
+              disabled={isCreating}
               className="bg-(--teal) text-(--white) px-5 py-3 rounded-lg font-semibold transition duration-300 hover:bg-(--teal)/60"
             >
-              Shorten Link
+              {isCreating ? "Shortening..." : "Shorten Link"}
             </button>
           </div>
         </div>
@@ -126,11 +124,20 @@ function DashboardPage() {
               </tr>
             </thead>
             <tbody className="font-medium">
-              {formattedLinks.length > 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="p-6 text-center text-(--slate-gray)"
+                  >
+                    Loading Links...
+                  </td>
+                </tr>
+              ) : formattedLinks.length > 0 ? (
                 formattedLinks
                   .slice(-5)
                   .reverse()
-                  .map(({ id, url, code, createdAt }) => (
+                  .map(({ id, url, code, createdAt, clicks }) => (
                     <tr key={id} className="group">
                       <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0 underline">
                         <a href={url} target="_blank" rel="noopener noreferrer">
@@ -147,7 +154,7 @@ function DashboardPage() {
                         </a>
                       </td>
                       <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0">
-                        {code}
+                        {clicks}
                       </td>
                       <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0">
                         {createdAt}

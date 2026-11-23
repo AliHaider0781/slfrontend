@@ -44,7 +44,38 @@ export function LinkProvider({ children }) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const linkData = await response.json();
-        return setLinks(linkData);
+        const enrichedLinks = await Promise.all(
+          linkData.map(async ({ id, url, code, created_at }) => {
+            const getStats = async () => {
+              const response = await fetch(
+                `http://127.0.0.1:8001/stats/${code}`,
+                {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              );
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              const clickData = await response.json();
+              return clickData;
+            };
+            const clickObject = await getStats();
+            const clickCount = clickObject.length;
+            const newLink = {
+              id: id,
+              url: url,
+              code: code,
+              created_at: created_at,
+              clicks: clickCount,
+            };
+            return newLink;
+          }),
+        );
+        return setLinks(enrichedLinks);
       } catch (error) {
         setError(error);
         console.error(`Error: Unable to fetch link data!, ${error}`);

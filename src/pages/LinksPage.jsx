@@ -4,11 +4,12 @@ import { useLink } from "../hooks/useLink";
 function LinksPage() {
   const { links } = useLink();
 
-  const formattedLinks = links.map(({ id, url, code, created_at }) => ({
+  const formattedLinks = links.map(({ id, url, code, created_at, clicks }) => ({
     id,
     url,
     code,
     createdAt: created_at,
+    clicks: clicks,
   }));
 
   return (
@@ -52,30 +53,32 @@ function LinksPage() {
         </thead>
         <tbody className="font-medium">
           {formattedLinks.length > 0 ? (
-            formattedLinks.reverse().map(({ id, url, code, createdAt }) => (
-              <tr key={id} className="group">
-                <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0 underline">
-                  <a href={url} target="_blank" rel="noopener noreferrer">
-                    {url}
-                  </a>
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0 text-(--teal) underline">
-                  <a
-                    href={`https://shortly.com/${code}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    https://shortly.com/{code}
-                  </a>
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0">
-                  {code}
-                </td>
-                <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0">
-                  {createdAt}
-                </td>
-              </tr>
-            ))
+            formattedLinks
+              .reverse()
+              .map(({ id, url, code, createdAt, clicks }) => (
+                <tr key={id} className="group">
+                  <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0 underline">
+                    <a href={url} target="_blank" rel="noopener noreferrer">
+                      {url}
+                    </a>
+                  </td>
+                  <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0 text-(--teal) underline">
+                    <a
+                      href={`https://shortly.com/${code}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      https://shortly.com/{code}
+                    </a>
+                  </td>
+                  <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0">
+                    {clicks}
+                  </td>
+                  <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0">
+                    {createdAt}
+                  </td>
+                </tr>
+              ))
           ) : (
             <tr>
               <td colSpan={4} className="p-6 text-center text-(--slate-gray)">
