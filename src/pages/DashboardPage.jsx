@@ -19,6 +19,22 @@ function DashboardPage() {
     clicks: clicks,
   }));
 
+  const totalClicks = formattedLinks.reduce(
+    (total, link) => total + link.clicks,
+    0,
+  );
+
+  const totalLinks = formattedLinks.length;
+
+  const topLink =
+    formattedLinks.length > 0
+      ? formattedLinks.toSorted((a, b) => b.clicks - a.clicks).at(0)
+      : null;
+
+  const isObject = (value) => {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+  };
+
   const postEndpoint = "http://127.0.0.1:8001/links";
 
   const createNewLink = async (url) => {
@@ -46,6 +62,7 @@ function DashboardPage() {
       setIsCreating(false);
     }
   };
+
   return (
     <div className="w-full flex flex-col items-center gap-8">
       <div className="w-full px-6 py-2 flex flex-col justify-center gap-6">
@@ -74,15 +91,21 @@ function DashboardPage() {
         <div className="flex gap-4 w-full">
           <div className="flex flex-col justify-center items-start gap-2 w-full border-2 border-(--border-gray) rounded-md px-4 py-6 shadow-lg">
             <h1 className="text-lg font-medium">Total Clicks</h1>
-            <p className="text-2xl font-semibold">1,524</p>
+            <p className="text-2xl font-semibold">{totalClicks}</p>
           </div>
           <div className="flex flex-col justify-center items-start gap-2 w-full border-2 border-(--border-gray) rounded-md px-4 py-6 shadow-lg">
             <h1 className="text-lg font-medium">Active Links</h1>
-            <p className="text-2xl font-semibold">45</p>
+            <p className="text-2xl font-semibold">{totalLinks}</p>
           </div>
           <div className="flex flex-col justify-center items-start gap-2 w-full border-2 border-(--border-gray) rounded-md px-4 py-6 shadow-lg">
             <h1 className="text-lg font-medium">Top Performing Link</h1>
-            <p className="text-2xl font-semibold">/promo-sale</p>
+            <p className="text-2xl font-semibold">
+              {isLoading
+                ? "Loading..."
+                : isObject(topLink)
+                  ? topLink.code
+                  : "No Links Yet"}
+            </p>
           </div>
         </div>
         <div className="flex flex-col justify-center items-center gap-6">
