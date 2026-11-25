@@ -2,7 +2,7 @@ import { Globe, Link2, TrendingUp, Calendar } from "lucide-react";
 import { useLink } from "../hooks/useLink";
 
 function LinksPage() {
-  const { links } = useLink();
+  const { links, isLoading, error } = useLink();
 
   const formattedLinks = links.map(({ id, url, code, created_at, clicks }) => ({
     id,
@@ -52,7 +52,19 @@ function LinksPage() {
           </tr>
         </thead>
         <tbody className="font-medium">
-          {formattedLinks.length > 0 ? (
+          {isLoading ? (
+            <tr>
+              <td colSpan={4} className="p-6 text-center text-(--slate-gray)">
+                Loading Links...
+              </td>
+            </tr>
+          ) : error ? (
+            <tr>
+              <td colSpan={4} className="p-6 text-center text-(--slate-gray)">
+                Unable to load links. Please try again.
+              </td>
+            </tr>
+          ) : formattedLinks.length > 0 ? (
             formattedLinks
               .reverse()
               .map(({ id, url, code, createdAt, clicks }) => (

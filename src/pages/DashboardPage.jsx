@@ -7,7 +7,7 @@ function DashboardPage() {
   const [newLink, setNewLink] = useState("");
   const [isCreating, setIsCreating] = useState(false);
 
-  const { links, refresh, isLoading } = useLink();
+  const { links, refresh, isLoading, error } = useLink();
 
   const { getToken } = useAuth();
 
@@ -103,7 +103,7 @@ function DashboardPage() {
               {isLoading
                 ? "Loading..."
                 : isObject(topLink)
-                  ? topLink.code
+                  ? `/${topLink.code}`
                   : "No Links Yet"}
             </p>
           </div>
@@ -154,6 +154,15 @@ function DashboardPage() {
                     className="p-6 text-center text-(--slate-gray)"
                   >
                     Loading Links...
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="p-6 text-center text-(--slate-gray)"
+                  >
+                    Unable to load links. Please try again.
                   </td>
                 </tr>
               ) : formattedLinks.length > 0 ? (
