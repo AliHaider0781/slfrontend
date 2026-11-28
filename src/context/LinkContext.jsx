@@ -33,13 +33,16 @@ export function LinkProvider({ children }) {
         if (!token) {
           throw new Error("Token does not exist!");
         }
-        const response = await fetch("http://127.0.0.1:8001/links", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          "https://shortly-backend-phi.vercel.app/links",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -48,7 +51,7 @@ export function LinkProvider({ children }) {
           linkData.map(async ({ id, url, code, created_at }) => {
             const getStats = async () => {
               const response = await fetch(
-                `http://127.0.0.1:8001/stats/${code}`,
+                `https://shortly-backend-phi.vercel.app/stats/${code}`,
                 {
                   method: "GET",
                   headers: {
@@ -71,6 +74,7 @@ export function LinkProvider({ children }) {
               code: code,
               created_at: created_at,
               clicks: clickCount,
+              clickData: clickObject,
             };
             return newLink;
           }),

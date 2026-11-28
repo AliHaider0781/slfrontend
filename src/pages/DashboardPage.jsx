@@ -1,11 +1,20 @@
-import { Globe, Link2, TrendingUp, Calendar } from "lucide-react";
+import {
+  Globe,
+  Link2,
+  TrendingUp,
+  Calendar,
+  X,
+  ArrowRight,
+} from "lucide-react";
 import { useLink } from "../hooks/useLink";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/react";
 
 function DashboardPage() {
   const [newLink, setNewLink] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const { links, refresh, isLoading, error } = useLink();
 
@@ -35,7 +44,7 @@ function DashboardPage() {
     return typeof value === "object" && value !== null && !Array.isArray(value);
   };
 
-  const postEndpoint = "http://127.0.0.1:8001/links";
+  const postEndpoint = "https://shortly-backend-phi.vercel.app/links";
 
   const createNewLink = async (url) => {
     try {
@@ -52,20 +61,44 @@ function DashboardPage() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const data = await response.json();
       refresh();
-      console.log("Sucess:", data);
+      setAlertMessage("Your URL is shortened!");
+      setShowAlert(true);
       setNewLink("");
-    } catch (e) {
-      console.error("Error:", e);
+    } catch {
+      setAlertMessage("Unable to shorten this URL. Please try again.");
+      setShowAlert(true);
     } finally {
       setIsCreating(false);
     }
   };
 
+  useEffect(() => {
+    if (!showAlert) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      return setShowAlert(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [showAlert]);
+
   return (
     <div className="w-full flex flex-col items-center gap-8">
       <div className="w-full px-6 py-2 flex flex-col justify-center gap-6">
+        {showAlert && (
+          <div className="bg-(--teal) text-white p-4 rounded-md flex justify-between">
+            <span>{alertMessage}</span>
+            <button
+              onClick={() => setShowAlert(false)}
+              className="text-(--white) font-semibold transition duration-300 hover:text-(--white)/60 "
+            >
+              <X />
+            </button>
+          </div>
+        )}
         <div className="w-full px-8 py-6 bg-(--white) flex flex-col justify-center items-start gap-4 border-[3px] border-(--teal) rounded-lg shadow-lg">
           <h1 className="text-2xl font-bold text-(--text-black)">
             Shorten a Link
@@ -75,13 +108,13 @@ function DashboardPage() {
               type="text"
               value={newLink}
               onChange={(e) => setNewLink(e.target.value)}
-              placeholder="Enter your long URl here..."
+              placeholder="Enter your long URL here..."
               className="text-(--text-black) border-2 border-(--border-gray) bg-(--white) w-175 px-5 py-2 text-lg rounded-lg placeholder:text-(--text-black)/70 focus:outline-none"
             />
 
             <button
               onClick={() => createNewLink(newLink)}
-              disabled={isCreating}
+              disabled={isCreating || !newLink}
               className="bg-(--teal) text-(--white) px-5 py-3 rounded-lg font-semibold transition duration-300 hover:bg-(--teal)/60"
             >
               {isCreating ? "Shortening..." : "Shorten Link"}
@@ -102,9 +135,11 @@ function DashboardPage() {
             <p className="text-2xl font-semibold">
               {isLoading
                 ? "Loading..."
-                : isObject(topLink)
-                  ? `/${topLink.code}`
-                  : "No Links Yet"}
+                : error
+                  ? "Unable to load analytics"
+                  : isObject(topLink)
+                    ? `/${topLink.code}`
+                    : "No Links Yet"}
             </p>
           </div>
         </div>
@@ -178,7 +213,7 @@ function DashboardPage() {
                       </td>
                       <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0 text-(--teal) underline">
                         <a
-                          href={`https://shortly.com/${code}`}
+                          href={`https://shortly-backend-phi.vercel.app/${code}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -205,9 +240,13 @@ function DashboardPage() {
               )}
             </tbody>
           </table>
-          <p className="font-semibold text-sm text-center underline">
-            <a href="/links">View more links {">"}</a>
-          </p>
+          <a
+            href="/links"
+            className="font-semibold text-sm text-center underline flex gap-1 items-center"
+          >
+            View more links
+            <ArrowRight size="18px" />
+          </a>
         </div>
       </div>
     </div>

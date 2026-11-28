@@ -76,7 +76,7 @@ function LinksPage() {
                   </td>
                   <td className="p-3 text-left border-b-2 border-(--border-gray) group-last:border-b-0 text-(--teal) underline">
                     <a
-                      href={`https://shortly.com/${code}`}
+                      href={`https://shortly-backend-phi.vercel.app/${code}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
